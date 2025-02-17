@@ -9,7 +9,7 @@ SUPABASE_KEY = os.getenv("SUPABASE_ANON_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # Tankerkönig API abrufen (ersetze 'DEIN_API_KEY' mit deinem tatsächlichen API-Key)
-API_URL = "https://creativecommons.tankerkoenig.de/json/list.php?lat=52.52&lng=13.405&rad=10&sort=dist&type=all&apikey=ccbe6d1e-e1a6-b779-8430-dcaa9cdb5436"
+API_URL = "https://creativecommons.tankerkoenig.de/json/list.php?lat=52.52&lng=13.405&rad=5&sort=dist&type=all&apikey=ccbe6d1e-e1a6-b779-8430-dcaa9cdb5436"
 response = requests.get(API_URL)
 data = response.json()
 
