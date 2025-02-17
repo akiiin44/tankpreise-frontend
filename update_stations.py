@@ -1,15 +1,15 @@
-import requests
 import os
+import requests
 from supabase import create_client
 from datetime import datetime
 
-# Supabase Client initialisieren
+# Supabase URL und Key aus den Umgebungsvariablen
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_ANON_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # Tankerkönig API abrufen
-API_URL = "https://creativecommons.tankerkoenig.de/json/list.php?lat=52.52&lng=13.405&rad=10&sort=dist&type=all&apikey=ccbe6d1e-e1a6-b779-8430-dcaa9cdb5436"
+API_URL = "https://creativecommons.tankerkoenig.de/json/list.php?lat=52.52&lng=13.405&rad=10&sort=dist&type=all&apikey=DEIN_API_KEY"
 response = requests.get(API_URL)
 data = response.json()
 
@@ -31,6 +31,5 @@ if "stations" in data:
     # Daten in Supabase speichern
     supabase.table("stations").upsert(stations).execute()
     print("Daten aktualisiert")
-
 else:
     print("Fehler: Keine Tankstellen-Daten gefunden.")
