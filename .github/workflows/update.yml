@@ -1,0 +1,27 @@
+name: Update Tankstellen-Daten
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"  # Alle 30 Minuten
+  workflow_dispatch:  # Manuelles Ausführen ermöglichen
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v3
+
+      - name: Python installieren
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+
+      - name: Abhängigkeiten installieren
+        run: pip install requests supabase
+
+      - name: Update-Skript ausführen
+        run: python update_stations.py
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
