@@ -8,26 +8,37 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_ANON_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# API URL (ersetzen mit der tatsächlichen API)
-API_URL = "https://api.tankerkoenig.de/json/prices.php?apikey=ccbe6d1e-e1a6-b779-8430-dcaa9cdb5436&ids=ID1,ID2,ID3"
+API_KEY = "ccbe6d1e-e1a6-b779-8430-dcaa9cdb5436"  # Ersetze durch deinen echten Tankerkönig API-Key
+API_URL = "https://api.tankerkoenig.de/json/prices.php"
 
 # Alle gültigen Station-IDs aus der Datenbank abrufen
 def get_valid_station_ids():
     response = supabase.table("stations").select("id").execute()
     if response.data:
-        return {station["id"] for station in response.data}
-    return set()
+        return [station["id"] for station in response.data]  # Liste der IDs
+    return []
 
 # Preisdaten abrufen
-def fetch_prices():
-    response = requests.get(API_URL)
-    if response.status_code == 200:
+def fetch_prices(station_ids):
+    if not station_ids:
+        print("Keine Tankstellen-IDs gefunden.")
+        return {}
+
+    params = {
+        "apikey": API_KEY,
+        "ids": ",".join(station_ids)  # IDs in URL einfügen
+    }
+    
+    try:
+        response = requests.get(API_URL, params=params)
+        response.raise_for_status()  # Fehlerhafte API-Anfragen abfangen
         return response.json().get("prices", {})
-    return {}
+    except requests.exceptions.RequestException as e:
+        print(f"Fehler bei der API-Anfrage: {e}")
+        return {}
 
 # Preisdaten in die Datenbank speichern
-def save_prices(price_data):
-    valid_station_ids = get_valid_station_ids()
+def save_prices(price_data, valid_station_ids):
     price_entries = []
 
     for station_id, prices in price_data.items():
@@ -48,5 +59,6 @@ def save_prices(price_data):
         print("Keine gültigen Preise zum Einfügen gefunden.")
 
 if __name__ == "__main__":
-    price_data = fetch_prices()
-    save_prices(price_data)
+    station_ids = get_valid_station_ids()
+    price_data = fetch_prices(station_ids)
+    save_prices(price_data, station_ids)
