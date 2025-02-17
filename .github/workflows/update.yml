@@ -17,10 +17,20 @@ jobs:
           node-version: '18'
           cache: 'npm'
 
-      - name: Abhängigkeiten installieren
+      - name: Package.json kopieren
         run: |
-          npm init -y
-          npm install @supabase/supabase-js node-fetch
+          echo '{
+            "name": "tankpreise-update",
+            "version": "1.0.0",
+            "type": "module",
+            "dependencies": {
+              "@supabase/supabase-js": "^2.39.0",
+              "node-fetch": "^3.3.0"
+            }
+          }' > package.json
+
+      - name: Abhängigkeiten installieren
+        run: npm install
 
       - name: Update-Skript ausführen
         env:
