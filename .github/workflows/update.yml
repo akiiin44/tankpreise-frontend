@@ -21,7 +21,11 @@ jobs:
         run: pip install requests supabase
 
       - name: Update-Skript ausführen
-        run: python update_stations.py
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> $GITHUB_ENV
+          echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> $GITHUB_ENV
+          python update_stations.py
+            env:
+            SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+            SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+
