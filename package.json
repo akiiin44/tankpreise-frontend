@@ -16,6 +16,7 @@
     "@mui/x-date-pickers": "^7.27.0",
     "@supabase/supabase-js": "^2.48.1",
     "date-fns": "^4.1.0",
+    "dotenv": "^16.4.7",
     "leaflet": "^1.9.4",
     "node-fetch": "^3.3.2",
     "react": "^19.0.0",
