@@ -2,31 +2,25 @@ name: Update Tankstellen-Daten
 
 on:
   schedule:
-    - cron: "*/30 * * * *"  # Alle 30 Minuten
-  workflow_dispatch:  # Manuelles Ausführen ermöglichen
+    - cron: '*/30 * * * *'  # Alle 30 Minuten
+  workflow_dispatch:
 
 jobs:
   update:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: 📥 Repository auschecken
         uses: actions/checkout@v3
-
-      - name: 🔧 Node.js einrichten
-        uses: actions/setup-node@v3
+        
+      - name: 🐍 Python einrichten
+        uses: actions/setup-python@v4
         with:
-          node-version: '18'
-          cache: 'npm'
-
+          python-version: '3.x'
+          
       - name: 📦 Abhängigkeiten installieren
-        run: npm install
-
-      - name: 🔑 Umgebungsvariablen setzen
-        run: echo "TANKER_API_KEY=${{ secrets.TANKER_API_KEY }}" >> $GITHUB_ENV
-
-      - name: 🚀 Update-Skript ausführen
-        env:
-          SUPABASE_URL: "https://wdeypjuqixmhtgyejlup.supabase.co"
-          SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndkZXlwanVxaXhtaHRneWVqbHVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MDU3NzEsImV4cCI6MjA1NTI4MTc3MX0.xjdte1Q0QVQ0A_csmm-MBu3o2LRiwdDW5ZrGUpIt8Og"
-        run: node update_stations.js
+        run: |
+          pip install requests supabase
+          
+      - name: 🔄 Update-Skript ausführen
+        run: python update_stations.py
