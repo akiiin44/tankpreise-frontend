@@ -1,4 +1,5 @@
 name: Update Tankstellen-Daten
+
 on:
   schedule:
     - cron: "*/30 * * * *"  # Alle 30 Minuten
@@ -7,20 +8,24 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Repository auschecken
+      - name: 📥 Repository auschecken
         uses: actions/checkout@v3
 
-      - name: Node.js einrichten
+      - name: 🔧 Node.js einrichten
         uses: actions/setup-node@v3
         with:
           node-version: '18'
           cache: 'npm'
 
-      - name: Abhängigkeiten installieren
+      - name: 📦 Abhängigkeiten installieren
         run: npm install
 
-      - name: Update-Skript ausführen
+      - name: 🔑 Umgebungsvariablen setzen
+        run: echo "TANKER_API_KEY=${{ secrets.TANKER_API_KEY }}" >> $GITHUB_ENV
+
+      - name: 🚀 Update-Skript ausführen
         env:
           SUPABASE_URL: "https://wdeypjuqixmhtgyejlup.supabase.co"
           SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndkZXlwanVxaXhtaHRneWVqbHVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MDU3NzEsImV4cCI6MjA1NTI4MTc3MX0.xjdte1Q0QVQ0A_csmm-MBu3o2LRiwdDW5ZrGUpIt8Og"
