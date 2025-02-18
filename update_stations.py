@@ -2,7 +2,7 @@
 import requests
 from supabase import create_client, Client
 from datetime import datetime
-import time
+import pytz
 
 # Konfiguration direkt im Code
 SUPABASE_URL = "https://wdeypjuqixmhtgyejlup.supabase.co"
@@ -13,6 +13,9 @@ TANKER_API_KEY = "ccbe6d1e-e1a6-b779-8430-dcaa9cdb5436"  # Hier Ihren API-Key ei
 LAT = "51.504333"
 LNG = "7.499020"
 RADIUS = "5"
+
+# Zeitzone Berlin
+BERLIN_TZ = pytz.timezone('Europe/Berlin')
 
 def fetch_gas_stations():
     """Hole Tankstellen-Daten von der Tankerkönig API"""
@@ -37,7 +40,9 @@ def fetch_gas_stations():
 def update_database(stations):
     """Aktualisiere die Supabase Datenbank"""
     supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-    timestamp = datetime.utcnow().isoformat()
+    
+    # Aktuelle Zeit in Berlin
+    timestamp = datetime.now(BERLIN_TZ).isoformat()
     
     for station in stations:
         try:
@@ -64,14 +69,14 @@ def update_database(stations):
                 "is_open": station["isOpen"]
             }).execute()
             
-            print(f"✅ Aktualisiert: {station['name']}")
+            print(f"✅ Aktualisiert: {station['name']} um {datetime.now(BERLIN_TZ).strftime('%H:%M:%S')}")
             
         except Exception as e:
             print(f"❌ Fehler bei {station['name']}: {str(e)}")
 
 def main():
     """Hauptfunktion"""
-    print("🚀 Starte Update-Prozess...")
+    print(f"🚀 Starte Update-Prozess... (Berliner Zeit: {datetime.now(BERLIN_TZ).strftime('%H:%M:%S')})")
     
     try:
         stations = fetch_gas_stations()

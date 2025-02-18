@@ -20,7 +20,7 @@ jobs:
           
       - name: 📦 Abhängigkeiten installieren
         run: |
-          pip install requests supabase
+          pip install requests supabase pytz
           
       - name: 🔄 Update-Skript ausführen
         run: python update_stations.py
